@@ -24,7 +24,6 @@
 - 如何构造Q函数？
 - 仔细分析数据，思考如何构造特征。
 - 对任务创建时间、到期时间、以及worker到达时间进行排序，模拟worker的兴趣和完成情况。
-![image](https://github.com/Viola-Siemens/RL-Crowdsourcing-Recommendation/assets/74176625/96922948-8d01-45fb-a1d4-7cf1de3a9c59)
 
 ## 任务分工
 ### 数据处理
