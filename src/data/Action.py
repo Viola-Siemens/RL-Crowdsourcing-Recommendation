@@ -1,4 +1,11 @@
+from typing import List
+
+
 class Action:
-    def __init__(self):
-        # TODO 构造函数
-        pass
+    _value: List[int]
+
+    def __init__(self, value):
+        self._value = value
+
+    def get(self):
+        return self._value

@@ -1,18 +1,36 @@
-from torch import Tensor
+from typing import List, Tuple
+
+import numpy as npy
 
 from data.Action import Action
 
 
 class Environment:
-    done: bool
+    _n_project: int
+    _n_worker: int
+    _active_project: npy.ndarray
+    _active_worker: npy.ndarray
+    _init_active_project: npy.ndarray
+    _init_active_worker: npy.ndarray
+    _buffered_states: List[npy.ndarray]
+    _done: bool
+    # TODO: 将读入的数据类放在成员这里
 
-    def __init__(self):
-        # TODO 构造函数
-
-        self.done = False
+    def __init__(self, n_project: int, n_worker: int, active_project: List[int], active_worker: List[int]):
+        self._n_project = n_project
+        self._n_worker = n_worker
+        self._init_active_project = npy.zeros(shape=(n_project,))
+        self._init_active_worker = npy.zeros(shape=(n_worker,))
+        for p in active_project:
+            self._init_active_project[p] = 1
+        for w in active_worker:
+            self._init_active_worker[w] = 1
+        self._buffered_states = []
+        self._done = False
 
     def reset(self) -> None:
-        # TODO 初始化环境状态
+        self._active_project = self._init_active_project.copy()
+        self._active_worker = self._init_active_worker.copy()
         pass
 
     def sample(self) -> Action:
@@ -23,6 +41,11 @@ class Environment:
         # TODO 执行行为获得奖励值
         pass
 
-    def get_state(self) -> Tensor:
-        # TODO 得到一个可以作为网络输入的state
-        pass
+    def get_state(self) -> Tuple[npy.ndarray, npy.ndarray]:
+        return self._active_project, self._active_worker
+
+    def get_history_states(self, n: int) -> List[npy.ndarray]:
+        if len(self._buffered_states) < n:
+            zero_paddings = [npy.zeros(shape=(self._n_project + self._n_worker,))] * (n - len(self._buffered_states))
+            return zero_paddings + self._buffered_states
+        return self._buffered_states[-n:]
