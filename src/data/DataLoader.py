@@ -130,3 +130,6 @@ class Data:
 
     def get_worker_id_by_index(self, index: int) -> int:
         return self._worker_id_rmap[index]
+
+    def get_projects_length(self) -> int:
+        return len(self._project_by_time)

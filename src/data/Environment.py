@@ -20,12 +20,12 @@ class Environment:
 
     def __init__(self, reward_type: str):
         self._buffered_states = []
-        self._done = False
         self._data = Data()
         self._data.get_data()
         self._reward_type = reward_type
 
     def reset(self) -> None:
+        self._done = False
         self._index = 0
         self._state = self._data.get_state_array(self._index)
         pass
@@ -47,9 +47,15 @@ class Environment:
         elif self._reward_type == 'rn2':
             ret = 1.0 - ((1.0 - ret) * (1.0 - self._data.get_quality_reward(worker_id)))
         self._index += 1
-        self._state = self._data.get_state_array(self._index)
+        if self._index >= self._data.get_projects_length():
+            self._done = True
+        else:
+            self._state = self._data.get_state_array(self._index)
 
         return ret
+
+    def is_done(self) -> bool:
+        return self._done
 
     def get_state(self) -> npy.ndarray:
         return self._state
