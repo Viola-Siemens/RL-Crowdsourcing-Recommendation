@@ -13,7 +13,7 @@ class ActorCritic(ReinforcementAlgorithm):
         super().__init__(net)
 
     def train(self, env: Environment, optimizer: Optimizer, epochs: int,
-              logger: Callable[[int, float], None], **kwargs) -> None:
+              logger: Callable[[int, float, float], None], **kwargs) -> None:
         # TODO
         pass
 

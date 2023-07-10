@@ -16,9 +16,9 @@ class ReinforcementAlgorithm(ABC):
 
     @abstractmethod
     def train(self, env: Environment, optimizer: Optimizer, epochs: int,
-              logger: Callable[[int, float], None], **kwargs) -> None:
+              logger: Callable[[int, float, float], None], **kwargs) -> None:
         # 算法核心需要训练的部分，env为算法需要交互的环境，optimizer为优化器，epochs为训练总轮数，
-        # logger为输出函数（传入的参数分别为当前epoch和reward值），其余参数如有必要在kwargs中传递
+        # logger为输出函数（传入的参数分别为当前epoch、reward、entropy值），其余参数如有必要在kwargs中传递
         pass
 
     @abstractmethod

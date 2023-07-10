@@ -1,11 +1,8 @@
-from typing import List
-
-
 class Action:
-    _value: List[int]
+    _value: int
 
-    def __init__(self, value):
+    def __init__(self, value: int):
         self._value = value
 
-    def get(self):
+    def get(self) -> int:
         return self._value
