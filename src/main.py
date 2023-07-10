@@ -35,7 +35,7 @@ if __name__ == "__main__":
     env.set_reward_type(args.reward_type)
     model.train(
         env,
-        optimizers[args.optimizer](model.net.parameters(), args.lr),
+        optimizers[args.optimizer](model.net, args.lr),
         args.epochs,
         lambda e, reward, entropy: print("epoch = %d, reward = %f, entropy = %f" % (e, reward, entropy))
     )
