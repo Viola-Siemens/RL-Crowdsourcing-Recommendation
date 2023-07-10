@@ -115,7 +115,7 @@ class Data:
     def get_state_array(self, index: int) -> npy.ndarray:
         project = self._project_by_time[index]
         ret = npy.zeros((self.n_state,))
-        ret[project["category"]] = 1
+        ret[project["category"] - 1] = 1
         ret[project["industry"] + self._n_cat] = 1
         return ret
 
