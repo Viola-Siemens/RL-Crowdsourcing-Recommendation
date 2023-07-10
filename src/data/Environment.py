@@ -18,7 +18,7 @@ class Environment:
     _reward_type: str  # 'w' for workers, 'r' for requesters (linear), 'rn1' for requesters (non-linear1),
     # 'rn2' for requesters (non-linear2)
 
-    def __init__(self, reward_type: str):
+    def __init__(self, reward_type: str = 'w'):
         self._buffered_states = []
         self._data = Data()
         self._data.get_data()
@@ -71,3 +71,6 @@ class Environment:
 
     def get_output_dim(self) -> int:
         return len(self._data.worker_quality)
+
+    def set_reward_type(self, reward_type: str) -> None:
+        self._reward_type = reward_type

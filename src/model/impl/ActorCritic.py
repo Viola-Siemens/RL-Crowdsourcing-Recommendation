@@ -6,10 +6,12 @@ from data.Environment import Environment
 from model.FCNet import FCNet
 from model.ReinforcementAlgorithm import ReinforcementAlgorithm
 
+n_gram = 5
+
 
 class ActorCritic(ReinforcementAlgorithm):
-    def __init__(self):
-        net = FCNet(4, [(8, None)])  # TODO
+    def __init__(self, env: Environment):
+        net = FCNet(env.get_state_dim() * n_gram, [(env.get_output_dim(), None)])  # TODO
         super().__init__(net)
 
     def train(self, env: Environment, optimizer: Optimizer, epochs: int,
