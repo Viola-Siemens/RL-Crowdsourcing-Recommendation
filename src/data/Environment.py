@@ -65,3 +65,9 @@ class Environment:
             zero_paddings = [npy.zeros(shape=(self._data.n_state,))] * (n - len(self._buffered_states))
             return zero_paddings + self._buffered_states
         return self._buffered_states[-n:]
+
+    def get_state_dim(self) -> int:
+        return self._data.n_state
+
+    def get_output_dim(self) -> int:
+        return len(self._data.worker_quality)
