@@ -27,6 +27,23 @@
 
 ## 任务分工
 ### 数据处理
+
+#### 数据集修改
+读数据前，请去掉"data/entry/entry_2906362_24.txt"中的 line 1 column 8586 的字符'ⓘ'
+
+#### 目录结构
+```grapha  
+├── RL-Crowdsourcing-Recommendation 
+│   └── src
+|       └── data
+│       └──dataset
+│           └──project_list.csv
+│           ├── worker_list.csv
+│           ├── entry
+│           └──project
+
+```
+
 ### 具体任务
 |              | 参与者 | 请求者 |
 |--------------|--------|--------|
