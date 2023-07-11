@@ -89,7 +89,7 @@ class Data:
                     entry_info[project_id][entry_number] = {}
                     entry_info[project_id][entry_number]["entry_created_at"] =\
                         int(parse(item["entry_created_at"]).timestamp())  # worker answer_time
-                    worker_id = int(item["entry_number"])
+                    worker_id = int(item["author"])
                     entry_info[project_id][entry_number]["worker"] = worker_id
                     tp = (worker_id, project_info[project_id]["category"])
                     if tp not in worker_category:
@@ -122,6 +122,9 @@ class Data:
         return ret
 
     def get_standard_reward(self, worker_id: int, project_id: int) -> float:
+        if (worker_id, self.project_info[project_id]["category"]) not in self.worker_category.keys():
+            self.worker_category[(worker_id, self.project_info[project_id]["category"])] = 0
+
         return self.worker_category[(worker_id, self.project_info[project_id]["category"])] / self.worker_project_cnt[worker_id]
 
     def get_quality_reward(self, worker_id: int) -> float:
