@@ -1,5 +1,6 @@
 import argparse
 
+from matplotlib import pyplot as plt
 from torch.optim import Adam, RMSprop, Adagrad, SGD
 
 from data.Environment import Environment
@@ -26,16 +27,31 @@ parser.add_argument("--reward_type", type=str, choices=['w', 'r', 'rn1', 'rn2'],
 parser.add_argument("--optimizer", type=str, choices=optimizers.keys(), help="Optimizer of Training")
 parser.add_argument("--lr", type=float, default=0.001, help="Learning Rate for optimizer")
 
+
 # 训练数据直接解压在src/resources中，如"src/resources/project_list.csv"、"src/resources/entry/entry_19393_24.txt"等
+
+def logger(epoch, reward, entropy):
+    print("epoch = %d, reward = %f, entropy = %f\n" % (epoch, reward, entropy))
+    rewards.append(reward)
+    entropies.append(entropy)
+
 
 if __name__ == "__main__":
     # parser.print_help()
     args = parser.parse_args()
     model = algorithms.get(args.algo)
     env.set_reward_type(args.reward_type)
+    rewards = []
+    entropies = []
     model.train(
         env,
         optimizers[args.optimizer](model.net, args.lr),
         args.epochs,
-        lambda e, reward, entropy: print("epoch = %d, reward = %f, entropy = %f\n" % (e, reward, entropy))
+        logger
     )
+    fig = plt.figure(figsize=(10, 6))
+    ax1 = fig.add_subplot(111)
+    ax1.plot(rewards, label="reward")
+    ax2 = ax1.twinx()
+    ax2.plot(entropies, label="entropy")
+    plt.show()

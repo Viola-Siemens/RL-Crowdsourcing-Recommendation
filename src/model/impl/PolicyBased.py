@@ -19,7 +19,7 @@ n_gram = 5
 class REINFORCE(ReinforcementAlgorithm):
     def __init__(self, env: Environment):
         # state_size * n_gram, action_size
-        net = FCNet(env.get_state_dim() * n_gram, [(env.get_output_dim(), None)])  # TODO
+        net = FCNet(env.get_state_dim() * n_gram, [(env.get_output_dim(), None)])
         super().__init__(net)
 
     def train(self, env: Environment, optimizer: Optimizer, epochs: int,
@@ -36,24 +36,21 @@ class REINFORCE(ReinforcementAlgorithm):
                 rewards.append(reward)
                 if env.is_done():
                     break
-            
+
             n_steps = len(rewards)
             loss = 0
             gamma = 1.0
             R = 0
             for t in reversed(range(n_steps)):
-                R =  gamma * R + rewards[t]
+                R = gamma * R + rewards[t]
                 loss = loss - log_probs[t] * R
-            loss = loss/n_steps
+            loss = loss / n_steps
 
             optimizer.zero_grad()
             loss.backward()
             optimizer.step()
 
-            
-            logger(e, npy.mean(rewards), log_probs[0])
-
-            
+            logger(e, float(npy.mean(rewards)), float(log_probs[0]))
 
     def select_action(self, env: Environment):
         hist = env.get_history_states(n_gram)
@@ -63,7 +60,6 @@ class REINFORCE(ReinforcementAlgorithm):
         m = Categorical(probs)
         action = m.sample()
         return action.item(), m.log_prob(action)
-    
 
     def get_algorithm_name(self) -> str:
         return "policy-based"
