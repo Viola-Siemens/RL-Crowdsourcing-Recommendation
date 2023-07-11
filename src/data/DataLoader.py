@@ -102,6 +102,8 @@ class Data:
 
         print("finish read_data")
         self.worker_quality = worker_quality
+        self.worker_category = worker_category
+        self.worker_project_cnt = worker_project_cnt
         self.project_info = project_info
         self.entry_info = entry_info
         self.industry_list = industry_list
