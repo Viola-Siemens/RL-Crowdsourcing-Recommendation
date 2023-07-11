@@ -4,7 +4,7 @@ from torch.optim import Adam, RMSprop, Adagrad, SGD
 
 from data.Environment import Environment
 from model.impl.ActorCritic import ActorCritic
-from model.impl.PolicyBased import PPO
+from model.impl.PolicyBased import REINFORCE
 from model.impl.ValueBased import QLearning
 
 env = Environment()
@@ -16,7 +16,7 @@ optimizers = {
     "sgd": lambda x, lr: SGD(params=x.parameters(), lr=lr),
 }
 
-for model in [ActorCritic(env), PPO(env), QLearning(env)]:
+for model in [ActorCritic(env), REINFORCE(env), QLearning(env)]:
     algorithms[model.get_algorithm_name()] = model
 
 parser = argparse.ArgumentParser()
@@ -37,5 +37,5 @@ if __name__ == "__main__":
         env,
         optimizers[args.optimizer](model.net, args.lr),
         args.epochs,
-        lambda e, reward, entropy: print("epoch = %d, reward = %f, entropy = %f" % (e, reward, entropy))
+        lambda e, reward, entropy: print("epoch = %d, reward = %f, entropy = %f\n" % (e, reward, entropy))
     )
