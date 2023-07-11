@@ -124,6 +124,7 @@ class Data:
     def get_standard_reward(self, worker_id: int, project_id: int) -> float:
         if (worker_id, self.project_info[project_id]["category"]) not in self.worker_category.keys():
             self.worker_category[(worker_id, self.project_info[project_id]["category"])] = 0
+
         return self.worker_category[(worker_id, self.project_info[project_id]["category"])] / self.worker_project_cnt[worker_id]
 
     def get_quality_reward(self, worker_id: int) -> float:
