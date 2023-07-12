@@ -1,6 +1,7 @@
 import csv
 import json
 import os
+import random
 from typing import Dict, List, Tuple
 
 import numpy as npy
@@ -17,6 +18,7 @@ class Data:
     n_state: int
     _n_cat: int = 10
     _project_by_time: List[Dict[str, int]]
+    _dev_project_by_time: List[Dict[str, int]]
     _worker_id_rmap: List[int]
 
     def get_data(self) -> None:
@@ -109,9 +111,14 @@ class Data:
         self.industry_list = industry_list
         self.n_state = self._n_cat + len(self.industry_list)
         pbt: List[Dict[str, int]] = []
+        dpbt: List[Dict[str, int]] = []
         for pid in project_info.keys():
-            pbt.append(project_info[pid])
+            if random.randint(0, 5) == 0:
+                pbt.append(project_info[pid])
+            else:
+                dpbt.append(project_info[pid])
         self._project_by_time = sorted(pbt, key=lambda a: a["start_date"])
+        self._dev_project_by_time = sorted(dpbt, key=lambda a: a["start_date"])
         self._worker_id_rmap = worker_id_rmap
 
     def get_state_array(self, index: int) -> npy.ndarray:

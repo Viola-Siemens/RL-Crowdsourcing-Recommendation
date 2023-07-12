@@ -1,17 +1,15 @@
 from typing import Callable
 
-from torch.optim import Optimizer
-from torch.distributions import Categorical
-from torch import Tensor
-
-from data.Environment import Environment
-from data.Action import Action
-from model.FCNet import FCNet
-from model.ReinforcementAlgorithm import ReinforcementAlgorithm
-
 import numpy as npy
 import torch.nn.functional as F
-import torch
+from torch import Tensor
+from torch.distributions import Categorical
+from torch.optim import Optimizer
+
+from data.Action import Action
+from data.Environment import Environment
+from model.FCNet import FCNet
+from model.ReinforcementAlgorithm import ReinforcementAlgorithm
 
 n_gram = 5
 
@@ -53,7 +51,8 @@ class REINFORCE(ReinforcementAlgorithm):
             logger(e, float(npy.mean(rewards)), float(log_probs[0]))
 
     def select_action(self, env: Environment):
-        hist = env.get_history_states(n_gram)
+        hist = env.get_history_states(n_gram - 1)
+        hist.append(env.get_state())
         hist = Tensor(npy.array(hist).reshape(-1))
         x = self.net(hist)[0]
         probs = F.softmax(x)

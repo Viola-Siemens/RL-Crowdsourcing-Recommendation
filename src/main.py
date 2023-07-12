@@ -1,4 +1,6 @@
 import argparse
+import math
+from typing import List
 
 from matplotlib import pyplot as plt
 from torch.optim import Adam, RMSprop, Adagrad, SGD
@@ -36,6 +38,23 @@ def logger(epoch, reward, entropy):
     entropies.append(entropy)
 
 
+def C(n, k):
+    return math.factorial(n) // (math.factorial(k) * math.factorial(n - k))
+
+
+def smooth(lst: List[float]) -> List[float]:
+    n = 32
+    lst = [lst[0] for _ in range(n // 2)] + lst
+    ret = []
+    kernel = [(C(n, i) / 2 ** n) for i in range(n + 1)]
+    for i in range(0, len(lst) - n):
+        v = 0
+        for j in range(n + 1):
+            v += kernel[j] * lst[i + j]
+        ret.append(v)
+    return ret
+
+
 if __name__ == "__main__":
     # parser.print_help()
     args = parser.parse_args()
@@ -51,8 +70,12 @@ if __name__ == "__main__":
     )
     fig = plt.figure(figsize=(10, 6))
     ax1 = fig.add_subplot(111)
-    ax1.plot(rewards, label="reward", color='b')
+    smooth_rewards = smooth(rewards)
+    ax1.plot(rewards, color='b', alpha=0.4)
+    line1, = ax1.plot(smooth_rewards, label="reward", color='b')
     ax2 = ax1.twinx()
-    ax2.plot(entropies, label="entropy", color='r')
-    plt.legend()
+    smooth_entropies = smooth(entropies)
+    ax2.plot(entropies, color='r', alpha=0.4)
+    line2, = ax2.plot(smooth_entropies, label="entropy", color='r')
+    plt.legend(handles=[line1, line2])
     plt.show()

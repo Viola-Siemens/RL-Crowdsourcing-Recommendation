@@ -40,6 +40,7 @@ class Environment:
         worker_id = self._data.get_worker_id_by_index(action.get())
         project_id = self._data.get_project_id_by_index(self._index)
         ret = self._data.get_standard_reward(worker_id, project_id)
+        self._buffered_states.append(self._state)
         if self._reward_type == 'r':
             ret = alpha * ret + (1.0 - alpha) * self._data.get_quality_reward(worker_id)
         elif self._reward_type == 'rn1':
