@@ -26,7 +26,7 @@ class REINFORCE(ReinforcementAlgorithm):
             env.reset()
             log_probs = []
             rewards = []
-            for t in range(100):
+            while not env.is_done():
                 action_value, log_prob = self.select_action(env)
                 log_probs.append(log_prob)
                 action = Action(action_value)
