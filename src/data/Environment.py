@@ -19,7 +19,6 @@ class Environment:
     # 'rn2' for requesters (non-linear2)
 
     def __init__(self, reward_type: str = 'w'):
-        self._buffered_states = []
         self._data = Data()
         self._data.get_data()
         self._reward_type = reward_type
@@ -28,6 +27,7 @@ class Environment:
         self._done = False
         self._index = 0
         self._state = self._data.get_state_array(self._index)
+        self._buffered_states = []
         pass
 
     def sample(self) -> Action:
