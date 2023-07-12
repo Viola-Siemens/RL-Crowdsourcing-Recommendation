@@ -1,7 +1,6 @@
 from typing import Callable
 
 from torch.optim import Optimizer
-
 from data.Environment import Environment
 from model.FCNet import FCNet
 from model.ReinforcementAlgorithm import ReinforcementAlgorithm
@@ -41,12 +40,13 @@ class ActorCritic(ReinforcementAlgorithm):
                 state_tensor = torch.tensor(state, dtype=torch.float32).unsqueeze(0)
                 # Actor network
                 action_probs = self.actor(state_tensor)
-                action_probs_tensor = torch.tensor(action_probs[0], dtype=torch.float32, requires_grad=True)
-                action = Action(torch.multinomial(action_probs_tensor, 1).item())
-
+                #action_probs_tensor = torch.tensor(action_probs[0], dtype=torch.float32, requires_grad=True)
+                action_probs_tensor = action_probs[0].clone().detach()
                 dist = Categorical(action_probs_tensor)
+                action = dist.sample()
 
-                reward = self.env.perform(action)
+                reward = self.env.perform(Action(action.item()))
+
                 next_state = self.env.get_state()
                 done = self.env.is_done()
                 total_reward += reward
@@ -62,13 +62,16 @@ class ActorCritic(ReinforcementAlgorithm):
 
                 # Critic loss and update
                 critic_loss = advantage.pow(2).mean()
+                optimizer.x = self.critic
                 optimizer.zero_grad()
                 critic_loss.backward()
                 optimizer.step()
 
                 # Actor loss and update
-                log_probs = torch.log(action_probs_tensor.squeeze(0))[action.get()]
+                log_probs = torch.log(action_probs_tensor.squeeze(0))[action.item()]
                 actor_loss = -(log_probs * advantage.detach()).mean()
+                actor_loss.requires_grad_(True) 
+                optimizer.x = self.actor
                 optimizer.zero_grad()
                 actor_loss.backward()
                 optimizer.step()
