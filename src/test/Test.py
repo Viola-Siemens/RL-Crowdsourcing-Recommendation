@@ -24,7 +24,7 @@ def C(n, k):
 
 
 def smooth(lst: List[float]) -> List[float]:
-    n = 32
+    n = 16
     lst = [lst[0] for _ in range(n // 2)] + lst
     ret = []
     kernel = [(C(n, i) / 2 ** n) for i in range(n + 1)]
@@ -51,7 +51,7 @@ if __name__ == "__main__":
             models[m].train(
                 env,
                 RMSprop(params=models[m].net.parameters(), lr=0.01),
-                512,
+                100,
                 logger
             )
             ax1 = plt.subplot(3, 4, r + m * 4 + 1)
