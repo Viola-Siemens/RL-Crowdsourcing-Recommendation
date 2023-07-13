@@ -37,12 +37,13 @@ class ActorCritic(ReinforcementAlgorithm):
             while not done:
                 count += 1
                 state_tensor = torch.tensor(npy.array(history_state).reshape(-1), dtype=torch.float32).unsqueeze(0)
+                
                 action_probs, value = self.net(state_tensor)
                 # action_probs_tensor = torch.tensor(action_probs[0], dtype=torch.float32, requires_grad=True)
                 action_probs_tensor = action_probs.clone().detach()
                 dist = Categorical(action_probs_tensor)
                 action = dist.sample()
-
+                
                 reward = env.perform(Action(action.item()))
 
                 next_state = env.get_state()
@@ -69,9 +70,8 @@ class ActorCritic(ReinforcementAlgorithm):
                 entropies.append(dist.log_prob(torch.tensor(action.item(), device="cuda")).cpu().numpy())
             
 
-                entropies.append(dist.entropy().item())
+            logger(epoch, total_reward / count, entropies[-1])
 
-            logger(epoch, total_reward / count, -sum(entropies) / count)
 
     def get_algorithm_name(self) -> str:
         return "actor-critic"
