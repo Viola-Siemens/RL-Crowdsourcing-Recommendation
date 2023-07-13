@@ -33,7 +33,7 @@ parser.add_argument("--lr", type=float, default=0.001, help="Learning Rate for o
 # 训练数据直接解压在src/resources中，如"src/resources/project_list.csv"、"src/resources/entry/entry_19393_24.txt"等
 
 def logger(epoch, reward, entropy):
-    print("epoch = %d, reward = %f, entropy = %f\n" % (epoch, reward, entropy))
+    print("epoch = %d, reward = %f, entropy = %f" % (epoch, reward, entropy))
     rewards.append(reward)
     entropies.append(entropy)
 

@@ -121,8 +121,11 @@ class Data:
         self._dev_project_by_time = sorted(dpbt, key=lambda a: a["start_date"])
         self._worker_id_rmap = worker_id_rmap
 
-    def get_state_array(self, index: int) -> npy.ndarray:
-        project = self._project_by_time[index]
+    def get_state_array(self, index: int, is_testing: bool) -> npy.ndarray:
+        if is_testing:
+            project = self._dev_project_by_time[index]
+        else:
+            project = self._project_by_time[index]
         ret = npy.zeros((self.n_state,))
         ret[project["category"] - 1] = 1
         ret[project["industry"] + self._n_cat] = 1
@@ -137,11 +140,15 @@ class Data:
     def get_quality_reward(self, worker_id: int) -> float:
         return self.worker_quality[worker_id]
 
-    def get_project_id_by_index(self, index: int) -> int:
+    def get_project_id_by_index(self, index: int, is_testing: bool) -> int:
+        if is_testing:
+            return self._dev_project_by_time[index]["id"]
         return self._project_by_time[index]["id"]
 
     def get_worker_id_by_index(self, index: int) -> int:
         return self._worker_id_rmap[index]
 
-    def get_projects_length(self) -> int:
+    def get_projects_length(self, is_testing: bool) -> int:
+        if is_testing:
+            return len(self._dev_project_by_time)
         return len(self._project_by_time)

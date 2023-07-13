@@ -1,10 +1,19 @@
 from abc import ABC, abstractmethod
-from typing import Callable
+from typing import Callable, Tuple
 
-from torch.optim import Optimizer
+from torch.optim import Optimizer, SGD
 
 from data.Environment import Environment
 from model.FCNet import FCNet
+
+_ret = (0, 0)
+
+_temp_net = FCNet(1, [(1, None)])
+
+
+def set_ret(e, reward, entropy):
+    global _ret
+    _ret = (reward, entropy)
 
 
 class ReinforcementAlgorithm(ABC):
@@ -25,3 +34,10 @@ class ReinforcementAlgorithm(ABC):
     def get_algorithm_name(self) -> str:
         # 算法的名字，即三种方法中的哪一种，请统一用全小写、无空格的字符串
         pass
+
+    def test(self, env: Environment) -> Tuple[float, float]:
+        global _ret
+        env.set_test(True)
+        self.train(env, SGD(_temp_net.parameters(), lr=0), 1, set_ret)
+        env.set_test(False)
+        return _ret

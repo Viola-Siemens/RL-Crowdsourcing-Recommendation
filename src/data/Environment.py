@@ -17,16 +17,18 @@ class Environment:
     _index: int
     _reward_type: str  # 'w' for workers, 'r' for requesters (linear), 'rn1' for requesters (non-linear1),
     # 'rn2' for requesters (non-linear2)
+    _is_testing: bool
 
     def __init__(self, reward_type: str = 'w'):
         self._data = Data()
         self._data.get_data()
         self._reward_type = reward_type
+        self._is_testing = False
 
     def reset(self) -> None:
         self._done = False
         self._index = 0
-        self._state = self._data.get_state_array(self._index)
+        self._state = self._data.get_state_array(self._index, self._is_testing)
         self._buffered_states = []
         pass
 
@@ -38,7 +40,7 @@ class Environment:
     def perform(self, action: Action) -> float:
         # 执行行为获得奖励值
         worker_id = self._data.get_worker_id_by_index(action.get())
-        project_id = self._data.get_project_id_by_index(self._index)
+        project_id = self._data.get_project_id_by_index(self._index, self._is_testing)
         ret = self._data.get_standard_reward(worker_id, project_id)
         self._buffered_states.append(self._state)
         if self._reward_type == 'r':
@@ -48,10 +50,10 @@ class Environment:
         elif self._reward_type == 'rn2':
             ret = 1.0 - ((1.0 - ret) * (1.0 - self._data.get_quality_reward(worker_id)))
         self._index += 1
-        if self._index >= self._data.get_projects_length():
+        if self._index >= self._data.get_projects_length(self._is_testing):
             self._done = True
         else:
-            self._state = self._data.get_state_array(self._index)
+            self._state = self._data.get_state_array(self._index, self._is_testing)
 
         return ret
 
@@ -75,3 +77,6 @@ class Environment:
 
     def set_reward_type(self, reward_type: str) -> None:
         self._reward_type = reward_type
+
+    def set_test(self, test: bool) -> None:
+        self._is_testing = test
