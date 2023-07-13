@@ -24,7 +24,7 @@ def C(n, k):
 
 
 def smooth(lst: List[float]) -> List[float]:
-    n = 32
+    n = 18
     lst = [lst[0] for _ in range(n // 2)] + lst
     ret = []
     kernel = [(C(n, i) / 2 ** n) for i in range(n + 1)]
@@ -50,11 +50,11 @@ if __name__ == "__main__":
             entropies = []
             models[m].train(
                 env,
-                RMSprop(params=models[m].net.parameters(), lr=0.01),
-                1024,
+                RMSprop(params=models[m].net.parameters(), lr=0.01, weight_decay=1e-6, eps=1e-8),
+                128,
                 logger
             )
-            ax1 = plt.subplot(3, 4, r * 3 + m + 1)
+            ax1 = plt.subplot(3, 4, r + m * 4 + 1)
             smooth_rewards = smooth(rewards)
             ax1.plot(rewards, color='b', alpha=0.3)
             line1, = ax1.plot(smooth_rewards, label="reward", color='b')
@@ -66,4 +66,5 @@ if __name__ == "__main__":
             dev_r, dev_e = models[m].test(env)
             print("Dev reward = %f, Dev Entropy = %f" % (dev_r, dev_e))
 
+    plt.tight_layout()
     plt.show()
