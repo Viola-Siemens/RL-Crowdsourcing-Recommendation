@@ -67,7 +67,7 @@ class ActorCritic(ReinforcementAlgorithm):
                 optimizer.zero_grad()
                 loss.backward()
                 optimizer.step()
-                entropies.append(dist.log_prob(torch.tensor(action.item(), device="cuda")))
+                entropies.append(dist.log_prob(torch.tensor(action.item(), device="cuda")).cpu().numpy())
             
 
             logger(epoch, total_reward / count, entropies[-1])
