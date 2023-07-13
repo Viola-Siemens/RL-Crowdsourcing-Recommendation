@@ -51,10 +51,10 @@ if __name__ == "__main__":
             models[m].train(
                 env,
                 RMSprop(params=models[m].net.parameters(), lr=0.01),
-                1024,
+                512,
                 logger
             )
-            ax1 = plt.subplot(3, 4, r * 3 + m + 1)
+            ax1 = plt.subplot(3, 4, r + m * 4 + 1)
             smooth_rewards = smooth(rewards)
             ax1.plot(rewards, color='b', alpha=0.3)
             line1, = ax1.plot(smooth_rewards, label="reward", color='b')
